@@ -247,12 +247,12 @@ def train():
                     down = True  # 本回合失败
                 speeds.clear()  # 清空列表
                 wheel_speeds.clear()  # 清空列表
-            # 车辆位置到起点终点直线的距离太大，表示偏离和航线
+            # 车辆位置到起点终点直线的距离太大，表示偏离航线
             if getDisctanceFromPointToLine(data.startPosition, data.endPosition, data.car.Position) > 35:
                 reward = -5  # 偏离航线负分
                 down = True  # 本回合失败
             if distance(data.car.Position, data.endPosition) > 220:
-                reward = -10  # 远离终点福分
+                reward = -10  # 远离终点负分
                 down = True  # 本回合失败
             if distance(data.car.Position, data.endPosition) < 20:
                 reward = 25  # 到达终点高分

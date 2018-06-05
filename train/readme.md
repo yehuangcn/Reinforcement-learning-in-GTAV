@@ -50,3 +50,30 @@
 ## train
 
     训练函数
+
+### 核心逻辑
+
+1.  每次在游戏中执行 act_batch_num 步
+
+    1.  每一步查看当前状态，
+        - 空转(撞上车辆/墙壁等) ---- 回合结束 负分
+        - 偏离航线 ---- 回合结束 负分
+        - 远离终点 ---- 回合结束 负分
+        - 到达终点 ---- 回合结束 高分
+    2.  如果回合结束就回到起点
+    3.  每一步保存图像 `x`,`data`,`info`,`reward` 到 `buffer` 中
+
+1.  游戏中执行 `act_batch_num` 步之后，从 `buffer` 中抽取 前 `learn_batch_num` 个记录进行训练
+    计算 `state` 时跨 `n` 步
+
+    - state_loss ----- 计算值函数的损失
+    - policise_loss ----- 计算策略函数的损失
+    - loss = state_loss + policise_loss ----- 损失函数相加
+    - loss.backward() ----- 计算梯度
+    - torch.nn.utils.clip_grad_norm\_(train_parameters, - 0.5) ----- 梯度清理
+
+1.  按训练次数 x 保存网络的 state_dict
+
+## class Record
+
+    放入`buffer`的记录类
