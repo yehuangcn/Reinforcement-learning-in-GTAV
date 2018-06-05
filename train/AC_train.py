@@ -38,21 +38,6 @@ my_transformer = transforms.Compose(
     [transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
 
-class Info:
-    def __init__(self):
-        self.speed = 0
-        self.angle = 0
-        self.acceleration = 0
-        self.distanceToEndPosition = None
-        self.near_by_vehicles = None
-        self.near_by_peds = None
-        self.near_by_props = None
-        self.near_by_touching_vehicles = None
-        self.near_by_touching_peds = None
-        self.near_by_touching_props = None
-        self.endPositionVector = None
-
-
 def getScreenPreprocess():
     """截取屏幕图像并预处理
     Returns:
@@ -69,6 +54,19 @@ def getScreenPreprocess():
 
 
 def getReward(data, previous_dataes):
+    """计算Reward
+    如果没有前几帧的游戏数据，那就只计算这一帧的reward
+    如果又前几帧的游戏数据，就计算下上一帧和这一帧车辆是否有损坏
+    note: 还有很大的改进余地
+
+    Arguments:
+        data {Data} -- 当前帧的游戏数据
+        previous_dataes {list[Data]} -- 前几帧的游戏数据
+
+    Returns:
+        float -- Reward
+    """
+
     if len(previous_dataes) > 0:
         health_reward = 0
         if data.car.Health - previous_dataes[0].car.Health < 0:
@@ -76,11 +74,22 @@ def getReward(data, previous_dataes):
                              previous_dataes[0].car.Health) * 2
         reward = calReward(data) + health_reward
     else:
+         # 如果没有前几帧的数据
         reward = calReward(data)
     return reward
 
 
 def getAssistInfo(data):
+    """
+    对游戏游戏数据(data)进行处理，筛选并计算出要进入 Resnet 的数据
+    
+    Arguments:
+        data {Data} -- 这一帧的游戏数据
+    
+    Returns:
+        [list] -- 输入ResNet的数据
+    """
+
     assist = []
     speed = data.car.Speed
     acceleration = data.car.Acceleration

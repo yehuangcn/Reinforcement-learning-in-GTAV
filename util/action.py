@@ -10,6 +10,9 @@ import win32con
 import time
 
 
+
+# 可执行的动作列表
+import win32api
 action_list = ['w', 'wa', 'wd', 'sa', 'sd', "s"]
 
 
@@ -27,8 +30,7 @@ def vec2keys(vec):
     index = np.argmax(vec)
     return action_list[index]
 
-
-import win32api
+# 可读取的键的列表
 key_list = "\bABCDEFGHIJKLMNOPQRSTUVWXYZ 123456789,.'£$/\\"
 
 

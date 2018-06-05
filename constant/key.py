@@ -80,11 +80,3 @@ class Keys:
     next = 0xd1
     insert = 0xd2
     delete = 0xd3
-
-
-
-
-w = [1, 0, 0, 0]
-s = [0, 1, 0, 0]
-a = [0, 0, 1, 0]
-d = [0, 0, 0, 1]
